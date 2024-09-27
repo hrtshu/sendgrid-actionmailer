@@ -292,7 +292,7 @@ module SendGridActionMailer
     def perform_send_request(email)
       result = client.mail._('send').post(request_body: email.to_json) # ლ(ಠ益ಠლ) that API
 
-      if result.status_code && result.status_code.start_with?('4')
+      if result.status_code && (result.status_code.start_with?('4') || result.status_code.start_with?('5'))
         full_message = "Sendgrid delivery failed with #{result.status_code}: #{result.body}"
         settings[:raise_delivery_errors] ? raise(SendgridDeliveryError, full_message) : warn(full_message)
       end
